@@ -1,19 +1,102 @@
-<header class="header">
-  <div class="header--title">
-    <img class="img" src="assets/images/pieChart.png" />
-    <h3>CHARTS POC</h3>
-  </div>
-  <div
-    class="header--links"
-    routerLinkActive="active"
-    [routerLinkActiveOptions]="{ exact: true }"
-  >
-    <a routerLink="/highcharts">Highcharts</a>
-    <a routerLink="/amcharts">Amcharts</a>
-    <a routerLink="/ngx-charts">NGXCharts</a>
-    <a routerLink="/ng2-charts">NG2Charts</a>
-  </div>
-</header>
-<div class="container">
-  <router-outlet></router-outlet>
-</div>
+<mat-drawer-container class="example-container">
+  <mat-drawer mode="side" opened>
+    <div class="side-wrapper">
+      <div class="side-item">
+        <header class="header">
+          <div class="header--title">
+            <img class="img" src="assets/images/pieChart.png" />
+            <h3>CHARTS POC</h3>
+          </div>
+        </header>
+      </div>
+      <div class="side-item">
+        <form [formGroup]="chartForm" (ngSubmit)="onCreateChart()">
+          <mat-form-field>
+            <mat-label>Select library</mat-label>
+            <select
+              matNativeControl
+              formControlName="libraryName"
+              [(value)]="selected"
+            >
+              <option
+                *ngFor="let library of libraries"
+                value="{{ library.value }}"
+                >{{ library.name }}</option
+              >
+            </select>
+          </mat-form-field>
+          <mat-form-field
+            [ngClass]="{ invisible: !chartForm.value.libraryName }"
+          >
+            <mat-label>Select chart type</mat-label>
+            <select
+              matNativeControl
+              formControlName="chartType"
+              [(value)]="selected"
+            >
+              <option
+                *ngFor="let chart of chartTypes"
+                value="{{ chart.value }}"
+              >
+                {{ chart.name }}
+              </option>
+            </select>
+          </mat-form-field>
+          <mat-form-field
+            [ngClass]="{ invisible: !chartForm.value.chartType }"
+            *ngIf="chartForm.value.chartType !== 'pieChart'"
+          >
+            <mat-label>X axis</mat-label>
+            <select matNativeControl formControlName="xAxis">
+              <option value="" selected>Year</option>
+            </select>
+          </mat-form-field>
+          <mat-form-field [ngClass]="{ invisible: !chartForm.value.chartType }">
+            <mat-label>Y axis</mat-label>
+            <select
+              matNativeControl
+              formControlName="yAxis"
+              [(value)]="selected"
+            >
+              <ng-container
+                *ngIf="
+                  chartForm.value.chartType === 'pieChart';
+                  else otherCharts
+                "
+              >
+                <option
+                  *ngFor="let pieOption of pieOptions"
+                  value="{{ pieOption.value }}"
+                >
+                  {{ pieOption.name }}
+                </option>
+              </ng-container>
+              <ng-template #otherCharts>
+                <option
+                  *ngFor="let otherOption of otherOptions"
+                  value="{{ otherOption.value }}"
+                >
+                  {{ otherOption.name }}
+                </option>
+              </ng-template>
+            </select>
+          </mat-form-field>
+          <div class="chart-parameter">
+            <button
+              mat-raised-button
+              type="submit"
+              [disabled]="!chartForm.value.yAxis"
+            >
+              Create
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </mat-drawer>
+  <mat-drawer-content>
+    <div class="container">
+      <ng-template #componentWrapper></ng-template>
+    </div>
+  </mat-drawer-content>
+</mat-drawer-container>

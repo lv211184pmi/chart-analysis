@@ -3,11 +3,11 @@ import { Routes, RouterModule } from '@angular/router';
 
 
 const routes: Routes = [
-  {
-    path: '',
-    redirectTo: 'highcharts',
-    pathMatch: 'full'
-  },
+  // {
+  //   path: '',
+  //   redirectTo: 'highcharts',
+  //   pathMatch: 'full'
+  // },
   {
     path: 'highcharts',
     loadChildren: () => import('./highcharts/highcharts.module').then(m => m.HighchartsModule)
