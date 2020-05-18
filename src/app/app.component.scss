@@ -1,0 +1,41 @@
+.header {
+  display: flex;
+  height: 40px;
+  padding: 20px 50px;
+  &--title {
+    display: flex;
+    width: 200px;
+    justify-content: space-between;
+    align-items: center;
+    margin-right: 50px;
+    .img {
+      width: 38px;
+      height: 38px;
+    }
+  }
+  &--links {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: flex-start;
+    a {
+      cursor: pointer;
+      text-decoration: none;
+      font-size: 1.2rem;
+    }
+    a:not(:last-child) {
+      margin-right: 20px;
+    }
+    a:visited {
+      color: #000;
+    }
+  }
+}
+.container {
+  width: 100%;
+  height: 100%;
+}
+
+.active {
+  color: #67b7dc;
+}

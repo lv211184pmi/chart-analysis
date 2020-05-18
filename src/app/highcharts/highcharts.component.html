@@ -1,0 +1,161 @@
+<mat-drawer-container class="example-container">
+  <mat-drawer mode="side" opened>
+    <mat-accordion>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <div class="panel-label">
+            <div class="panel-label--item">
+              <mat-panel-title>
+                Bar Chart
+              </mat-panel-title>
+            </div>
+            <div class="panel-label--item">
+              <mat-panel-description>
+                Select your chart type
+              </mat-panel-description>
+            </div>
+          </div>
+        </mat-expansion-panel-header>
+        <form [formGroup]="barForm" (ngSubmit)="createChart(barForm, 'column')">
+          <div class="chart-parameter">
+            <mat-form-field>
+              <mat-label>Chart name</mat-label>
+              <input formControlName="chartName" matInput />
+            </mat-form-field>
+          </div>
+
+          <div class="chart-parameter">
+            <mat-form-field>
+              <mat-label>X axis</mat-label>
+              <select matNativeControl formControlName="xAxis">
+                <option value="" selected>Year</option>
+              </select>
+            </mat-form-field>
+          </div>
+          <div class="chart-parameter">
+            <mat-form-field>
+              <mat-label>Y Axis</mat-label>
+              <mat-select formControlName="yAxis" [(value)]="selected">
+                <mat-option value="monthly_revenue"
+                  >Market Capacity, billion $</mat-option
+                >
+                <mat-option value="annual_revenue"
+                  >Annual Revenue, billion $</mat-option
+                >
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="chart-parameter">
+            <button mat-raised-button type="submit">Create</button>
+          </div>
+        </form>
+      </mat-expansion-panel>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <div class="panel-label">
+            <div class="panel-label--item">
+              <mat-panel-title>
+                Linear Chart
+              </mat-panel-title>
+            </div>
+            <div class="panel-label--item">
+              <mat-panel-description>
+                Select your chart type
+              </mat-panel-description>
+            </div>
+          </div>
+        </mat-expansion-panel-header>
+        <form
+          [formGroup]="linearForm"
+          (ngSubmit)="createChart(linearForm, 'line')"
+        >
+          <div class="chart-parameter">
+            <mat-form-field>
+              <mat-label>Chart name</mat-label>
+              <input formControlName="chartName" matInput />
+            </mat-form-field>
+          </div>
+
+          <div class="chart-parameter">
+            <mat-form-field>
+              <mat-label>X axis</mat-label>
+              <select matNativeControl formControlName="xAxis">
+                <option value="" selected>Year</option>
+              </select>
+            </mat-form-field>
+          </div>
+          <div class="chart-parameter">
+            <mat-form-field>
+              <mat-label>Y Axis</mat-label>
+              <mat-select formControlName="yAxis" [(value)]="selected">
+                <mat-option value="monthly_revenue"
+                  >Market Capacity, billion $</mat-option
+                >
+                <mat-option value="annual_revenue"
+                  >Annual Revenue, billion $</mat-option
+                >
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="chart-parameter">
+            <button mat-raised-button type="submit">Create</button>
+          </div>
+        </form>
+      </mat-expansion-panel>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <div class="panel-label">
+            <div class="panel-label--item">
+              <mat-panel-title>
+                Pie Chart
+              </mat-panel-title>
+            </div>
+            <div class="panel-label--item">
+              <mat-panel-description>
+                Select your chart type
+              </mat-panel-description>
+            </div>
+          </div>
+        </mat-expansion-panel-header>
+        <form [formGroup]="pieForm" (ngSubmit)="createPieChart(pieForm)">
+          <div class="chart-parameter">
+            <mat-form-field>
+              <mat-label>Chart name</mat-label>
+              <input formControlName="chartName" matInput />
+            </mat-form-field>
+          </div>
+
+          <div class="chart-parameter">
+            <mat-form-field>
+              <mat-label>Data source</mat-label>
+              <mat-select formControlName="dataSource" [(value)]="selected">
+                <mat-option value="profit_capacity">Profit capacity</mat-option>
+                <mat-option value="GDP_share">GDP share</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="chart-parameter">
+            <button mat-raised-button type="submit">Create</button>
+          </div>
+        </form>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </mat-drawer>
+  <mat-drawer-content>
+    <h2 class="charts-title">Highcharts example</h2>
+    <div class="chart-wrapper">
+      <highcharts-chart
+        *ngIf="chartOptions; else epmtyBlock"
+        [Highcharts]="Highcharts"
+        [options]="chartOptions"
+        class="chart-wrapper--chart"
+      ></highcharts-chart>
+      <ng-template #epmtyBlock>
+        <p>Please, choose your chart.</p>
+      </ng-template>
+    </div>
+  </mat-drawer-content>
+</mat-drawer-container>

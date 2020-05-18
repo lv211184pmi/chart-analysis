@@ -1,0 +1,52 @@
+{
+  "stock-parameters": [
+    {
+      "stock_indusrty": "Medical/Dental Instruments",
+      "stock_name": "Amedica Corporation",
+      "monthly_revenue": [
+        40.16,
+        96.39,
+        199.67
+      ],
+      "annual_revenue": [
+        298501.54,
+        624178.47,
+        44355.59
+      ],
+      "profit_capacity": 41.18,
+      "GDP_share": 11.18
+    },
+    {
+      "stock_indusrty": "Commercial Banks",
+      "stock_name": "Royal Bank Of Canada",
+      "monthly_revenue": [
+        103.48,
+        95.43,
+        543.34
+      ],
+      "annual_revenue": [
+        169326.40,
+        182993.20,
+        796958.56
+      ],
+      "profit_capacity": 25.12,
+      "GDP_share": 25.03
+    },
+    {
+      "stock_indusrty": "Transport & Logistic",
+      "stock_name": "Golub Capital BDC, Inc.",
+      "monthly_revenue": [
+        111.44,
+        302.35,
+        71.65
+      ],
+      "annual_revenue": [
+        27316.67,
+        916142.90,
+        177361.63
+      ],
+      "profit_capacity": 12.32,
+      "GDP_share": 31.23
+    }
+  ]
+}
