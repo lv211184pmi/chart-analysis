@@ -1,8 +1,6 @@
-import { Component, OnInit, Output } from '@angular/core';
+import { Component, Output, Input, OnInit } from '@angular/core';
 
 import * as Highcharts from 'highcharts';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { DataService } from '../data.service';
 
 @Component({
   selector: 'app-highcharts',
@@ -10,49 +8,29 @@ import { DataService } from '../data.service';
   styleUrls: ['./highcharts.component.scss']
 })
 export class HighchartsComponent implements OnInit {
-  public barForm: FormGroup;
-  public linearForm: FormGroup;
-  public pieForm: FormGroup;
-  private $mockData;
-
-  Highcharts = Highcharts;
+  @Input() mockData: any;
   @Output() chartOptions;
+  Highcharts = Highcharts;
 
-  constructor(
-    private fb: FormBuilder,
-    private ds: DataService
-  ) { }
+  private typeMapper = {
+    lineChart: 'line',
+    columnChart: 'column',
+    pieChart: 'pie'
+  };
 
   ngOnInit() {
-    this.ds.getData().subscribe(data => {
-      this.$mockData = data;
-    });
-
-    this.barForm = this.fb.group({
-      chartName: [''],
-      xAxis: [''], disabled: true,
-      yAxis: ['']
-    });
-
-    this.linearForm = this.fb.group({
-      chartName: [''],
-      xAxis: [''], disabled: true,
-      yAxis: ['']
-    });
-
-    this.pieForm = this.fb.group({
-      chartName: [''],
-      dataSource: ['']
-    });
+    this.mockData.form.chartType === 'pieChart' ?
+      this.createPieChart() :
+      this.createChart();
   }
 
-  public createChart(form, type) {
+  private createChart() {
     const chartObj = {
-      chart: { type },
-      title: { text: form.value.chartName },
+      chart: { type: this.typeMapper[this.mockData.form.chartType] },
+      title: { text: 'Highcharts example' },
       yAxis: {
         title: {
-          text: form.value.yAxis
+          text: this.mockData.form.yAxis
         }
       },
       xAxis: {
@@ -71,16 +49,16 @@ export class HighchartsComponent implements OnInit {
       series: [],
     };
 
-    this.$mockData.forEach(mockItem => {
+    this.mockData.data.forEach(mockItem => {
       chartObj.series.push({
         name: mockItem.stock_name,
-        data: mockItem[form.value.yAxis]
+        data: mockItem[this.mockData.form.yAxis]
       });
     });
     this.chartOptions = { ...chartObj };
   }
 
-  public createPieChart(form) {
+  private createPieChart() {
     const chartObj = {
 
       chart: {
@@ -90,11 +68,11 @@ export class HighchartsComponent implements OnInit {
         type: 'pie'
       },
       title: {
-        text: form.value.chartName
+        text: 'Highcharts example'
       },
       yAxis: {
         title: {
-          text: form.value.dataSource
+          text: this.mockData.form.dataSource
         }
       },
       accessibility: {
@@ -118,10 +96,10 @@ export class HighchartsComponent implements OnInit {
         data: []
       }]
     };
-    this.$mockData.forEach(mockItem => {
+    this.mockData.data.forEach(mockItem => {
       chartObj.series[0].data.push({
         name: mockItem.stock_indusrty,
-        y: mockItem[form.value.dataSource]
+        y: mockItem[this.mockData.form.dataSource]
       });
     });
 

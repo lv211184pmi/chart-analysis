@@ -13,79 +13,73 @@
         <form [formGroup]="chartForm" (ngSubmit)="onCreateChart()">
           <mat-form-field>
             <mat-label>Select library</mat-label>
-            <select
-              matNativeControl
-              formControlName="libraryName"
-              [(value)]="selected"
-            >
-              <option
+            <mat-select formControlName="libraryName">
+              <mat-option
                 *ngFor="let library of libraries"
-                value="{{ library.value }}"
-                >{{ library.name }}</option
+                [value]="library.value"
               >
-            </select>
+                {{ library.name }}
+              </mat-option>
+            </mat-select>
           </mat-form-field>
           <mat-form-field
             [ngClass]="{ invisible: !chartForm.value.libraryName }"
           >
             <mat-label>Select chart type</mat-label>
-            <select
-              matNativeControl
-              formControlName="chartType"
-              [(value)]="selected"
-            >
-              <option
+            <mat-select formControlName="chartType">
+              <mat-option
                 *ngFor="let chart of chartTypes"
-                value="{{ chart.value }}"
+                [value]="chart.value"
               >
                 {{ chart.name }}
-              </option>
-            </select>
+              </mat-option>
+            </mat-select>
           </mat-form-field>
-          <mat-form-field
-            [ngClass]="{ invisible: !chartForm.value.chartType }"
-            *ngIf="chartForm.value.chartType !== 'pieChart'"
+          <ng-container
+            *ngIf="chartForm.value.chartType === 'pieChart'; else otherCharts"
           >
-            <mat-label>X axis</mat-label>
-            <select matNativeControl formControlName="xAxis">
-              <option value="" selected>Year</option>
-            </select>
-          </mat-form-field>
-          <mat-form-field [ngClass]="{ invisible: !chartForm.value.chartType }">
-            <mat-label>Y axis</mat-label>
-            <select
-              matNativeControl
-              formControlName="yAxis"
-              [(value)]="selected"
-            >
-              <ng-container
-                *ngIf="
-                  chartForm.value.chartType === 'pieChart';
-                  else otherCharts
-                "
-              >
-                <option
+            <mat-form-field>
+              <mat-label>Chart data</mat-label>
+              <mat-select formControlName="dataSource">
+                <mat-option
                   *ngFor="let pieOption of pieOptions"
-                  value="{{ pieOption.value }}"
+                  [value]="pieOption.value"
                 >
                   {{ pieOption.name }}
-                </option>
-              </ng-container>
-              <ng-template #otherCharts>
-                <option
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </ng-container>
+          <ng-template #otherCharts>
+            <mat-form-field
+              [ngClass]="{ invisible: !chartForm.value.chartType }"
+            >
+              <mat-label>X axis</mat-label>
+              <mat-select formControlName="xAxis">
+                <mat-option [value]="">
+                  Year
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field
+              [ngClass]="{ invisible: !chartForm.value.chartType }"
+            >
+              <mat-label>Y axis</mat-label>
+              <mat-select formControlName="yAxis">
+                <mat-option
                   *ngFor="let otherOption of otherOptions"
-                  value="{{ otherOption.value }}"
+                  [value]="otherOption.value"
                 >
                   {{ otherOption.name }}
-                </option>
-              </ng-template>
-            </select>
-          </mat-form-field>
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </ng-template>
           <div class="chart-parameter">
             <button
               mat-raised-button
               type="submit"
-              [disabled]="!chartForm.value.yAxis"
+              [disabled]="chartForm.invalid"
             >
               Create
             </button>

@@ -4,8 +4,7 @@ import {
   ViewChild,
   ComponentRef,
   ComponentFactoryResolver,
-  ViewContainerRef,
-  TemplateRef
+  ViewContainerRef
 } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 
@@ -13,6 +12,7 @@ import { HighchartsComponent } from './highcharts/highcharts.component';
 import { AmchartsComponent } from './amcharts/amcharts.component';
 import { NgxChartsComponent } from './ngx-charts/ngx-charts.component';
 import { Ng2ChartsComponent } from './ng2-charts/ng2-charts.component';
+import { DataService } from './data.service';
 
 @Component({
   selector: 'app-root',
@@ -20,7 +20,7 @@ import { Ng2ChartsComponent } from './ng2-charts/ng2-charts.component';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  @ViewChild('componentWrapper') public componentWrapper: TemplateRef<any>;
+  @ViewChild('componentWrapper', { read: ViewContainerRef }) componentWrapper: ViewContainerRef;
   public libraries = [
     { name: 'Highcharts', value: 'highcharts' },
     { name: 'Amcharts', value: 'amcharts' },
@@ -53,31 +53,40 @@ export class AppComponent implements OnInit {
     ng2Charts: Ng2ChartsComponent
   };
   private componentRef: ComponentRef<any>;
+  private $mockData;
 
   constructor(
     private fb: FormBuilder,
+    private ds: DataService,
     private resolver: ComponentFactoryResolver,
-    private container: ViewContainerRef
   ) { }
 
   ngOnInit() {
+    this.ds.getData().subscribe(data => {
+      this.$mockData = data;
+    });
     this.chartForm = this.fb.group({
       libraryName: [null],
       chartType: [null],
       xAxis: [null], disabled: true,
       yAxis: [null],
+      dataSource: [null]
     });
   }
 
   public onCreateChart() {
-    const componentFactory = this.componentMapper[this.chartForm.value.chartForm];
+    this.componentWrapper.clear();
+    const componentFactory = this.componentMapper[this.chartForm.value.libraryName];
     if (!componentFactory) {
       return;
     }
+
     const factory = this.resolver.resolveComponentFactory(componentFactory);
 
-    this.componentRef = this.container.createComponent(factory);
-    this.componentRef.instance[data] = this.params.data[key];
+    this.componentRef = this.componentWrapper.createComponent(factory);
+    this.componentRef.instance.mockData = {
+      data: this.$mockData,
+      form: this.chartForm.value
+    };
   }
-
 }

@@ -1,10 +1,7 @@
-import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
+import { Component, OnInit, NgZone, OnDestroy, Input } from '@angular/core';
 import * as am4core from '@amcharts/amcharts4/core';
 import * as am4charts from '@amcharts/amcharts4/charts';
 import am4themes_animated from '@amcharts/amcharts4/themes/animated';
-import { FormBuilder, FormGroup } from '@angular/forms';
-
-import { DataService } from '../data.service';
 
 am4core.useTheme(am4themes_animated);
 
@@ -14,61 +11,38 @@ am4core.useTheme(am4themes_animated);
   styleUrls: ['./amcharts.component.scss']
 })
 export class AmchartsComponent implements OnInit, OnDestroy {
+  @Input() mockData: any;
   public chart;
-  public barForm: FormGroup;
-  public linearForm: FormGroup;
-  public pieForm: FormGroup;
-  private $mockData;
+  private typeMapper = {
+    lineChart: 'line',
+    columnChart: 'column',
+    pieChart: 'pie'
+  };
 
-  constructor(
-    private fb: FormBuilder,
-    private ds: DataService,
-    private zone: NgZone
-  ) { }
+  constructor(private zone: NgZone) { }
 
   ngOnInit() {
-    this.ds.getData().subscribe(data => {
-      this.$mockData = data;
-    });
-
-    this.barForm = this.fb.group({
-      chartName: [''],
-      xAxis: [''], disabled: true,
-      yAxis: ['']
-    });
-
-    this.linearForm = this.fb.group({
-      chartName: [''],
-      xAxis: [''], disabled: true,
-      yAxis: ['']
-    });
-
-    this.pieForm = this.fb.group({
-      chartName: [''],
-      dataSource: ['']
-    });
+    this.createChart();
   }
 
   ngOnDestroy() {
     this.zone.runOutsideAngular(() => {
-      if (this.chart) {
+      setTimeout(() => {
         this.chart.dispose();
-      }
+      }, 0);
     });
   }
 
-  createChart(form, type) {
-    this.chart = {};
-    // let chart;
-    switch (type) {
+  private createChart() {
+    switch (this.typeMapper[this.mockData.form.chartType]) {
       case 'pie':
-        this.chart = am4core.create('pieChartDiv', am4charts.PieChart);
+        this.chart = am4core.create('chartDiv', am4charts.PieChart);
         const pieSeries = this.chart.series.push(new am4charts.PieSeries());
         pieSeries.dataFields.value = 'parameter';
         pieSeries.dataFields.category = 'industry';
         break;
       case 'line':
-        this.chart = am4core.create('pieChartDiv', am4charts.XYChart);
+        this.chart = am4core.create('chartDiv', am4charts.XYChart);
         const categoryAxis = this.chart.xAxes.push(new am4charts.CategoryAxis());
         categoryAxis.dataFields.category = 'industry';
         categoryAxis.title.text = 'Industrie name';
@@ -85,12 +59,12 @@ export class AmchartsComponent implements OnInit, OnDestroy {
     }
 
     this.chart.paddingRight = 20;
-    this.$mockData.forEach(mockItem => {
+    this.mockData.data.forEach(mockItem => {
       this.chart.data.push({
         industry: mockItem.stock_indusrty,
-        parameter: type === 'pie' ?
-          mockItem[form.value.dataSource] :
-          mockItem[form.value.yAxis][0]
+        parameter: this.typeMapper[this.mockData.form.chartType] === 'pie' ?
+          mockItem[this.mockData.form.dataSource] :
+          mockItem[this.mockData.form.yAxis][0]
       });
     });
   }
